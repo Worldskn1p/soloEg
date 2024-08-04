@@ -1,0 +1,963 @@
+<html><head><base href="https://websim.io/app-social-blog/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConectaEG: Plataforma Social de Blogs</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --primary-color: #1DA1F2;
+    --background-color: #F7F9FA;
+    --text-color: #14171A;
+    --secondary-text-color: #657786;
+    --border-color: #E1E8ED;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    padding-bottom: 60px;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  header {
+    background-color: #000000;
+    color: white;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin-left: 15px;
+  }
+  
+  .post, .create-post {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+  
+  .post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .post-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .post-author {
+    font-weight: bold;
+  }
+  
+  .post-content {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .post-image, .post-video {
+    max-width: 100%;
+    border-radius: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .post-actions {
+    display: flex;
+    justify-content: flex-start;
+    color: var(--secondary-text-color);
+    font-size: 14px;
+  }
+  
+  .post-actions span {
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  
+  .create-post textarea {
+    width: 100%;
+    height: 100px;
+    resize: none;
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .create-post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .create-post button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .file-input {
+    display: none;
+  }
+  
+  .file-label {
+    cursor: pointer;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+  }
+  
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.12);
+    padding: 10px 0;
+  }
+
+  .bottom-nav .container {
+    max-width: 400px;
+    padding: 0 10px;
+  }
+
+  .bottom-nav .nav-item {
+    text-align: center;
+  }
+
+  .bottom-nav .nav-link {
+    color: var(--secondary-text-color);
+    font-size: 1.2rem;
+    padding: 8px 0;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+
+  .bottom-nav .nav-link:hover,
+  .bottom-nav .nav-link.active {
+    color: var(--primary-color);
+    transform: scale(1.1);
+  }
+
+  .bottom-nav .nav-link i {
+    font-size: 1.5rem;
+  }
+
+  .comments-section {
+    margin-top: 10px;
+    display: none;
+  }
+
+  .comment {
+    background-color: var(--background-color);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .comment-actions {
+    position: absolute;
+    right: -100px;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    transition: right 0.3s ease;
+  }
+
+  .comment:hover .comment-actions {
+    right: 0;
+  }
+
+  .reply-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .comment-form {
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .comment-form input {
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    margin-right: 10px;
+  }
+
+  .comment-form button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  .news-section {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  .news-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .news-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .news-item h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+  }
+
+  .news-item p {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+  }
+
+  .mention {
+    color: var(--primary-color);
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .join-panel {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  .join-panel h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+  }
+
+  .join-panel p {
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .join-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+
+  .join-button:hover {
+    transform: scale(1.05);
+    background-color: #1991DA;
+  }
+
+  .follow-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .follow-button:hover {
+    background-color: #1991DA;
+  }
+
+  .following {
+    background-color: #E1E8ED;
+    color: var(--primary-color);
+  }
+
+  .user-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .user-link:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">
+        ConectaEG
+      </div>
+      <div class="nav-links">
+        <a href="#" title="Notificaciones"><i class="fas fa-bell"></i></a>
+        <a href="#" title="Buscar usuarios"><i class="fas fa-search"></i></a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <main class="main-content">
+      <div class="create-post">
+        <textarea placeholder="¿Qué estás pensando?" id="post-content"></textarea>
+        <div class="create-post-actions">
+          <label for="file-input-media" class="file-label">
+            <i class="fas fa-photo-video"></i>
+          </label>
+          <input type="file" id="file-input-media" class="file-input" accept="image/*, video/*">
+          <button class="btn btn-primary" id="publish-button">Publicar</button>
+        </div>
+        <div id="media-preview"></div>
+      </div>
+
+      <div id="posts"></div>
+      
+      <div class="news-section">
+        <h2>Noticias Destacadas</h2>
+        <div id="news-container"></div>
+      </div>
+
+      <div class="join-panel">
+        <h2>¡Únete a ConectaEG!</h2>
+        <p>Descubre la riqueza cultural y la diversidad de Guinea Ecuatorial. Conecta con personas apasionadas, comparte tus experiencias y sé parte de una comunidad vibrante que celebra la identidad ecuatoguineana. ¡Tu voz es importante en ConectaEG!</p>
+        <button class="join-button" id="join-button">Únete ahora</button>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="container">
+      <ul class="nav justify-content-between">
+        <li class="nav-item">
+          <a class="nav-link active" href="https://websim.io/app-social-blog/"><i class="fas fa-home"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://websim.io/app-social-blog/noticias"><i class="fas fa-newspaper"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://websim.io/app-social-blog/mensajes"><i class="fas fa-comment-dots"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://websim.io/app-social-blog/perfil"><i class="fas fa-user"></i></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentUser = null;
+    let selectedMedia = null;
+
+    const posts = [
+      { id: 1, author: 'Juan Pérez', avatar: 'https://websim.io/app-social-blog/avatars/juan.jpg', username: '@juanperez', content: '¡Acabo de publicar un nuevo artículo sobre las últimas tendencias en IA! No te lo pierdas 🤖', likes: 15, comments: [
+        { id: 1, author: 'María García', content: '¡Genial! No puedo esperar para leerlo.', replies: [] },
+        { id: 2, author: 'Carlos Rodríguez', content: '¿Podrías compartir el enlace?', replies: [] }
+      ], followers: 120 },
+      { id: 2, author: 'Laura Martínez', avatar: 'https://websim.io/app-social-blog/avatars/laura.jpg', username: '@lauramrtnz', content: '¡Emocionada de anunciar mi nueva serie de viajes! Primera parada: ¡Tokio! 🗼✈️', image: 'https://websim.io/app-social-blog/images/tokyo.jpg', likes: 32, comments: [
+        { id: 3, author: 'Ana López', content: '¡Qué envidia! Disfruta mucho.', replies: [] },
+        { id: 4, author: 'Pedro Sánchez', content: 'No te olvides de visitar el templo Senso-ji.', replies: [] }
+      ], followers: 250 },
+      { id: 3, author: 'Miguel Sánchez', avatar: 'https://websim.io/app-social-blog/avatars/miguel.jpg', username: '@miguelsanchez', content: 'Busco recomendaciones sobre los mejores bootcamps de programación. ¿Alguna sugerencia? 💻', likes: 8, comments: [
+        { id: 5, author: 'Sofía Fernández', content: 'Te recomiendo Ironhack, tienen muy buenos programas.', replies: [] },
+        { id: 6, author: 'Javier Martín', content: 'Yo hice uno en Le Wagon y fue una experiencia increíble.', replies: [] }
+      ], followers: 80 }
+    ];
+
+    const news = [
+      { id: 1, title: 'Nueva función de grupos en ConectaEG', content: 'Ahora puedes crear y unirte a grupos de interés para conectar con personas afines.' },
+      { id: 2, title: 'Actualización de seguridad', content: 'Hemos mejorado nuestras medidas de seguridad para proteger mejor tu información.' }
+    ];
+
+    function renderPosts() {
+      const postsContainer = document.getElementById('posts');
+      postsContainer.innerHTML = '';
+      posts.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.className = 'post';
+        postElement.innerHTML = `
+          <div class="post-header">
+            <img src="${post.avatar}" alt="Avatar de ${post.author}" class="post-avatar">
+            <div>
+              <a href="#" class="user-link" data-username="${post.username}">${post.author}</a>
+              <span class="post-username">${post.username}</span>
+            </div>
+            ${currentUser ? `<button class="follow-button" data-username="${post.username}">Seguir</button>` : ''}
+          </div>
+          <div class="post-content">${processMentions(post.content)}</div>
+          ${post.image ? `<img src="${post.image}" alt="Imagen de la publicación" class="post-image">` : ''}
+          ${post.video ? `<video src="${post.video}" controls class="post-video"></video>` : ''}
+          <div class="post-actions">
+            <span class="like-action" data-post-id="${post.id}"><i class="fas fa-heart"></i> ${post.likes}</span>
+            <span class="comment-action" data-post-id="${post.id}"><i class="fas fa-comment"></i> ${post.comments.length}</span>
+            <span class="followers-count">${post.followers} seguidores</span>
+          </div>
+          <div class="comments-section" id="comments-${post.id}">
+            ${renderComments(post.comments)}
+            <div class="comment-form">
+              <input type="text" placeholder="Añade un comentario..." class="comment-input">
+              <button class="comment-submit" data-post-id="${post.id}">Enviar</button>
+            </div>
+          </div>
+        `;
+        postsContainer.appendChild(postElement);
+      });
+
+      // Añadir event listeners para likes, comentarios y seguimiento
+      document.querySelectorAll('.like-action').forEach(likeButton => {
+        likeButton.addEventListener('click', handleLike);
+      });
+
+      document.querySelectorAll('.comment-action').forEach(commentButton => {
+        commentButton.addEventListener('click', toggleComments);
+      });
+
+      document.querySelectorAll('.comment-submit').forEach(submitButton => {
+        submitButton.addEventListener('click', handleCommentSubmit);
+      });
+
+      document.querySelectorAll('.follow-button').forEach(followButton => {
+        followButton.addEventListener('click', handleFollow);
+      });
+
+      document.querySelectorAll('.user-link').forEach(userLink => {
+        userLink.addEventListener('click', handleUserProfileClick);
+      });
+    }
+
+    function renderComments(comments) {
+      return comments.map(comment => `
+        <div class="comment" data-comment-id="${comment.id}">
+          <strong>${comment.author}:</strong> ${processMentions(comment.content)}
+          <div class="comment-actions">
+            <button class="reply-button">Responder</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function processMentions(content) {
+      return content.replace(/@(\w+)/g, '<span class="mention" data-username="$1">@$1</span>');
+    }
+
+    function renderNews() {
+      const newsContainer = document.getElementById('news-container');
+      newsContainer.innerHTML = '';
+      news.forEach(item => {
+        const newsElement = document.createElement('div');
+        newsElement.className = 'news-item';
+        newsElement.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.content}</p>
+        `;
+        newsContainer.appendChild(newsElement);
+      });
+    }
+
+    function handleLike(event) {
+      if (!currentUser) {
+        showAlert('Por favor regístrate o inicia sesión para dar like a las publicaciones');
+        return;
+      }
+      const postId = event.currentTarget.dataset.postId;
+      const post = posts.find(p => p.id == postId);
+      if (post) {
+        post.likes++;
+        event.currentTarget.innerHTML = `<i class="fas fa-heart"></i> ${post.likes}`;
+      }
+    }
+
+    function toggleComments(event) {
+      const postId = event.currentTarget.dataset.postId;
+      const commentsSection = document.getElementById(`comments-${postId}`);
+      commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function handleCommentSubmit(event) {
+      if (!currentUser) {
+        showAlert('Por favor regístrate o inicia sesión para comentar');
+        return;
+      }
+      const postId = event.currentTarget.dataset.postId;
+      const post = posts.find(p => p.id == postId);
+      const commentInput = event.currentTarget.parentElement.querySelector('.comment-input');
+      if (post && commentInput.value.trim() !== '') {
+        const newComment = {
+          id: Date.now(),
+          author: currentUser.name,
+          content: commentInput.value.trim(),
+          replies: []
+        };
+        post.comments.push(newComment);
+        commentInput.value = '';
+        renderPosts();
+        notifyMentionedUsers(newComment.content, 'comentario');
+      }
+    }
+
+    function handleFollow(event) {
+      if (!currentUser) {
+        showAlert('Por favor regístrate o inicia sesión para seguir a otros usuarios');
+        return;
+      }
+      const username = event.currentTarget.dataset.username;
+      const post = posts.find(p => p.username === username);
+      if (post) {
+        if (event.currentTarget.classList.contains('following')) {
+          post.followers--;
+          event.currentTarget.textContent = 'Seguir';
+          event.currentTarget.classList.remove('following');
+        } else {
+          post.followers++;
+          event.currentTarget.textContent = 'Siguiendo';
+          event.currentTarget.classList.add('following');
+        }
+        renderPosts();
+      }
+    }
+
+    function notifyMentionedUsers(content, type) {
+      const mentionedUsers = content.match(/@(\w+)/g);
+      if (mentionedUsers) {
+        mentionedUsers.forEach(username => {
+          const user = username.substring(1);
+          showAlert(`Se ha notificado a ${user} que ha sido mencionado en un ${type}`);
+        });
+      }
+    }
+
+    function handleUserProfileClick(event) {
+      event.preventDefault();
+      const username = event.currentTarget.dataset.username;
+      showAlert(`Accediendo al perfil de ${username}`);
+      // Aquí puedes implementar la lógica para navegar al perfil del usuario
+    }
+
+    renderPosts();
+    renderNews();
+
+    // Simular obtención de nuevas publicaciones
+    function fetchNewPosts() {
+      axios.get('https://websim.io/app-social-blog/api/posts')
+        .then(response => {
+          console.log('Nuevas publicaciones obtenidas:', response.data);
+        })
+        .catch(error => {
+          console.error('Error al obtener nuevas publicaciones:', error);
+        });
+    }
+
+    // Manejar la selección de multimedia
+    const fileInputMedia = document.getElementById('file-input-media');
+    const mediaPreview = document.getElementById('media-preview');
+
+    fileInputMedia.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          selectedMedia = { type: file.type.startsWith('image/') ? 'image' : 'video', content: e.target.result };
+          updateMediaPreview();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function updateMediaPreview() {
+      if (selectedMedia) {
+        if (selectedMedia.type === 'image') {
+          mediaPreview.innerHTML = `<img src="${selectedMedia.content}" alt="Vista previa de la imagen" style="max-width: 100%; border-radius: 15px; margin-top: 10px;">`;
+        } else {
+          mediaPreview.innerHTML = `<video src="${selectedMedia.content}" controls style="max-width: 100%; border-radius: 15px; margin-top: 10px;"></video>`;
+        }
+      } else {
+        mediaPreview.innerHTML = '';
+      }
+    }
+
+    // Simular publicación de una nueva entrada
+    document.getElementById('publish-button').addEventListener('click', () => {
+      if (!currentUser) {
+        showAlert('Por favor regístrate o inicia sesión para empezar a disfrutar de las funciones');
+        return;
+      }
+
+      const content = document.getElementById('post-content').value;
+      if (content.trim() || selectedMedia) {
+        const newPost = {
+          id: posts.length + 1,
+          author: currentUser.name,
+          avatar: `https://websim.io/app-social-blog/avatars/${currentUser.username}.jpg`,
+          username: `@${currentUser.username}`,
+          content: content,
+          likes: 0,
+          comments: [],
+          followers: 0
+        };
+        
+        if (selectedMedia) {
+          if (selectedMedia.type === 'image') {
+            newPost.image = selectedMedia.content;
+          } else {
+            newPost.video = selectedMedia.content;
+          }
+        }
+        
+        posts.unshift(newPost);
+        renderPosts();
+
+        document.getElementById('post-content').value = '';
+        mediaPreview.innerHTML = '';
+        selectedMedia = null;
+
+        notifyMentionedUsers(content, 'publicación');
+      }
+    });
+
+    // Botón "Únete"
+    document.getElementById('join-button').addEventListener('click', () => {
+      window.location.href = 'https://websim.io/app-social-blog/registro-login';
+    });
+
+    // Búsqueda de usuarios
+    document.querySelector('.nav-links a[title="Buscar usuarios"]').addEventListener('click', (e) => {
+      e.preventDefault();
+      const searchTerm = prompt('Ingresa el nombre de usuario a buscar:');
+      if (searchTerm) {
+        window.location.href = `https://websim.io/app-social-blog/buscar/${searchTerm}`;
+      }
+    });
+
+    // Notificaciones
+    document.querySelector('.nav-links a[title="Notificaciones"]').addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!currentUser) {
+        showAlert('Por favor regístrate o inicia sesión para empezar a disfrutar de las funciones');
+        return;
+      }
+      // Aquí puedes implementar la lógica para mostrar las notificaciones
+      showAlert('Función de notificaciones en desarrollo.');
+    });
+
+    // Función para mostrar alertas personalizadas
+    function showAlert(message) {
+      const alertElement = document.createElement('div');
+      alertElement.className = 'alert alert-warning alert-dismissible fade show';
+      alertElement.role = 'alert';
+      alertElement.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      `;
+      document.body.insertBefore(alertElement, document.body.firstChild);
+    }
+
+    // Manejar clics en menciones
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('mention')) {
+        const username = e.target.dataset.username;
+        showAlert(`Ver perfil de ${username}`);
+        // Aquí puedes implementar la lógica para mostrar el perfil del usuario mencionado
+      }
+    });
+
+    // Simular inicio de sesión o registro
+    function simulateAuthSuccess(userData) {
+      currentUser = userData;
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('disabled'));
+      renderPosts();
+      showAlert('¡Bienvenido a ConectaEG! Ahora puedes disfrutar de todas las funciones.');
+    }
+
+    // Ejemplo de uso:
+    // simulateAuthSuccess({ name: 'Usuario Ejemplo', username: 'usuario_ejemplo' });
+
+    // Obtener nuevas publicaciones periódicamente (cada 30 segundos)
+    setInterval(fetchNewPosts, 30000);
+
+    // Cooperación entre direcciones
+    document.querySelectorAll('.bottom-nav .nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const route = e.currentTarget.getAttribute('href');
+        navigateTo(route);
+      });
+    });
+
+    function navigateTo(route) {
+      // Simular la navegación entre diferentes secciones de la aplicación
+      console.log(`Navegando a: ${route}`);
+      // Aquí puedes implementar la lógica para cargar el contenido correspondiente a cada ruta
+      switch (route) {
+        case 'https://websim.io/app-social-blog/':
+          showAlert('Estás en la página principal');
+          break;
+        case 'https://websim.io/app-social-blog/noticias':
+          showAlert('Cargando sección de noticias...');
+          break;
+        case 'https://websim.io/app-social-blog/mensajes':
+          showAlert('Abriendo mensajes...');
+          break;
+        case 'https://websim.io/app-social-blog/perfil':
+          showAlert('Cargando tu perfil...');
+          break;
+        default:
+          showAlert('Ruta no reconocida');
+      }
+    }
+
+    // Implementar la funcionalidad de mención
+    document.getElementById('post-content').addEventListener('input', (e) => {
+      const content = e.target.value;
+      const lastWord = content.split(' ').pop();
+      if (lastWord.startsWith('@')) {
+        // Simular sugerencias de usuarios para mencionar
+        const suggestions = posts.filter(post => post.username.toLowerCase().includes(lastWord.toLowerCase().substring(1)));
+        if (suggestions.length > 0) {
+          showMentionSuggestions(suggestions);
+        }
+      } else {
+        hideMentionSuggestions();
+      }
+    });
+
+    function showMentionSuggestions(suggestions) {
+      let suggestionsList = document.getElementById('mention-suggestions');
+      if (!suggestionsList) {
+        suggestionsList = document.createElement('ul');
+        suggestionsList.id = 'mention-suggestions';
+        suggestionsList.style.position = 'absolute';
+        suggestionsList.style.background = 'white';
+        suggestionsList.style.border = '1px solid #ccc';
+        suggestionsList.style.listStyle = 'none';
+        suggestionsList.style.padding = '5px';
+        document.querySelector('.create-post').appendChild(suggestionsList);
+      }
+      suggestionsList.innerHTML = suggestions.map(post => `<li data-username="${post.username}">${post.author} (${post.username})</li>`).join('');
+      suggestionsList.style.display = 'block';
+
+      suggestionsList.querySelectorAll('li').forEach(item => {
+        item.addEventListener('click', (e) => {
+          const username = e.target.dataset.username;
+          const textarea = document.getElementById('post-content');
+          const content = textarea.value;
+          const lastAtIndex =
+ content.lastIndexOf('@');
+          const newContent = content.substring(0, lastAtIndex) + username + ' ';
+          textarea.value = newContent;
+          hideMentionSuggestions();
+        });
+      });
+    }
+
+    function hideMentionSuggestions() {
+      const suggestionsList = document.getElementById('mention-suggestions');
+      if (suggestionsList) {
+        suggestionsList.style.display = 'none';
+      }
+    }
+
+    // Implementar la funcionalidad de respuesta a comentarios
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('reply-button')) {
+        const commentElement = e.target.closest('.comment');
+        const commentId = commentElement.dataset.commentId;
+        const post = posts.find(p => p.comments.some(c => c.id == commentId));
+        
+        if (post) {
+          const replyForm = document.createElement('div');
+          replyForm.className = 'comment-form reply-form';
+          replyForm.innerHTML = `
+            <input type="text" placeholder="Responde a este comentario..." class="comment-input">
+            <button class="comment-submit" data-comment-id="${commentId}">Enviar</button>
+          `;
+          commentElement.appendChild(replyForm);
+
+          const submitButton = replyForm.querySelector('.comment-submit');
+          submitButton.addEventListener('click', handleReplySubmit);
+        }
+      }
+    });
+
+    function handleReplySubmit(event) {
+      if (!currentUser) {
+        showAlert('Por favor regístrate o inicia sesión para responder a comentarios');
+        return;
+      }
+      const commentId = event.currentTarget.dataset.commentId;
+      const replyInput = event.currentTarget.parentElement.querySelector('.comment-input');
+      const post = posts.find(p => p.comments.some(c => c.id == commentId));
+      const comment = post.comments.find(c => c.id == commentId);
+      
+      if (comment && replyInput.value.trim() !== '') {
+        const newReply = {
+          id: Date.now(),
+          author: currentUser.name,
+          content: replyInput.value.trim()
+        };
+        comment.replies.push(newReply);
+        replyInput.value = '';
+        renderPosts();
+        notifyMentionedUsers(newReply.content, 'respuesta');
+      }
+    }
+
+    // Implementar la funcionalidad de notificaciones
+    function showNotification(message) {
+      if (!("Notification" in window)) {
+        showAlert("Este navegador no soporta notificaciones de escritorio");
+        return;
+      }
+
+      if (Notification.permission === "granted") {
+        new Notification("ConectaEG", { body: message });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(function (permission) {
+          if (permission === "granted") {
+            new Notification("ConectaEG", { body: message });
+          }
+        });
+      }
+    }
+
+    // Ejemplo de uso de notificaciones:
+    // showNotification("Tienes un nuevo seguidor");
+
+    // Implementar la funcionalidad de deslizar para responder comentarios
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe(e.target);
+    }, false);
+
+    function handleSwipe(target) {
+      const commentElement = target.closest('.comment');
+      if (commentElement && touchEndX < touchStartX) {
+        const replyButton = commentElement.querySelector('.reply-button');
+        if (replyButton) {
+          replyButton.click();
+        }
+      }
+    }
+
+    // Implementar la funcionalidad de perfil de usuario
+    function loadUserProfile(username) {
+      // Simular carga de perfil de usuario
+      const user = posts.find(post => post.username === username);
+      if (user) {
+        const profileHtml = `
+          <div class="user-profile">
+            <img src="${user.avatar}" alt="Avatar de ${user.author}" class="profile-avatar">
+            <h2>${user.author}</h2>
+            <p>${user.username}</p>
+            <p>${user.followers} seguidores</p>
+            <button class="follow-button" data-username="${user.username}">Seguir</button>
+          </div>
+        `;
+        document.querySelector('.main-content').innerHTML = profileHtml;
+        showAlert(`Perfil de ${user.author} cargado`);
+      } else {
+        showAlert('Usuario no encontrado');
+      }
+    }
+
+    // Ejemplo de uso:
+    // loadUserProfile('@juanperez');
+
+    // Implementar búsqueda de usuarios
+    function searchUsers(query) {
+      const results = posts.filter(post => 
+        post.author.toLowerCase().includes(query.toLowerCase()) || 
+        post.username.toLowerCase().includes(query.toLowerCase())
+      );
+      return results;
+    }
+
+    // Ejemplo de uso:
+    // const searchResults = searchUsers('juan');
+    // console.log(searchResults);
+
+    // Implementar la funcionalidad de cooperación entre direcciones
+    function cooperateBetweenDirections(direction1, direction2) {
+      showAlert(`Cooperando entre ${direction1} y ${direction2}`);
+      // Aquí puedes implementar la lógica específica de cooperación entre direcciones
+    }
+
+    // Ejemplo de uso:
+    // cooperateBetweenDirections('Noticias', 'Mensajes');
+
+  </script>
+</body>
+</html>
