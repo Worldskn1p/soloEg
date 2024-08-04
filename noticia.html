@@ -1,0 +1,789 @@
+<html><head><base href="https://websim.io/app-social-blog/noticias">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConectaEG: Noticias</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --primary-color: #1DA1F2;
+    --background-color: #F7F9FA;
+    --text-color: #14171A;
+    --secondary-text-color: #657786;
+    --border-color: #E1E8ED;
+    --accent-color: #FFC107;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    padding-bottom: 60px;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  header {
+    background-color: #000000;
+    color: white;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin-left: 15px;
+  }
+  
+  .news-section {
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--primary-color);
+  }
+  
+  .news-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+  
+  .news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .news-content {
+    padding: 20px;
+  }
+  
+  .news-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+  }
+  
+  .news-excerpt {
+    color: var(--secondary-text-color);
+    font-size: 1rem;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+  
+  .news-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--secondary-text-color);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+  }
+  
+  .news-source {
+    font-weight: bold;
+  }
+  
+  .news-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background-color: var(--accent-color);
+  }
+  
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.12);
+    padding: 10px 0;
+  }
+  
+  .bottom-nav .container {
+    max-width: 400px;
+    padding: 0 10px;
+  }
+  
+  .bottom-nav .nav-item {
+    text-align: center;
+  }
+  
+  .bottom-nav .nav-link {
+    color: var(--secondary-text-color);
+    font-size: 1.2rem;
+    padding: 8px 0;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .bottom-nav .nav-link:hover,
+  .bottom-nav .nav-link.active {
+    color: var(--primary-color);
+    transform: scale(1.1);
+  }
+  
+  .bottom-nav .nav-link i {
+    font-size: 1.5rem;
+  }
+  
+  .modal-content {
+    border-radius: 15px;
+  }
+  
+  .modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .modal-body {
+    padding-top: 0;
+  }
+  
+  .modal-footer {
+    border-top: none;
+    justify-content: flex-start;
+  }
+
+  .add-news-btn {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    z-index: 1000;
+  }
+
+  .news-icon {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin-right: 15px;
+  }
+
+  .news-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .news-category {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+
+  #newsPhotoPreview {
+    max-width: 100%;
+    margin-top: 10px;
+  }
+
+  .news-blocks {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .news-block {
+    width: 45%;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .news-block h2 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .news-block.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .user-name {
+    font-weight: bold;
+  }
+
+  .comment-section {
+    margin-top: 15px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+  }
+
+  .comment {
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+  }
+
+  .comment:hover {
+    transform: translateY(-2px);
+  }
+
+  .comment-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 0.9rem;
+  }
+
+  .comment-like {
+    cursor: pointer;
+    color: var(--secondary-text-color);
+    transition: color 0.2s ease;
+  }
+
+  .comment-like.active {
+    color: #e74c3c;
+  }
+
+  .comment-reply {
+    cursor: pointer;
+    color: var(--primary-color);
+    transition: color 0.2s ease;
+  }
+
+  .comment-reply:hover {
+    color: #1a91da;
+  }
+
+  .reply-form {
+    margin-top: 10px;
+    display: none;
+  }
+
+  .reply {
+    margin-left: 30px;
+    padding: 12px;
+    background-color: #f1f3f5;
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  #newsContainer {
+    margin-top: 20px;
+  }
+
+  .user-color-0 { color: #e74c3c; }
+  .user-color-1 { color: #3498db; }
+  .user-color-2 { color: #2ecc71; }
+  .user-color-3 { color: #f39c12; }
+  .user-color-4 { color: #9b59b6; }
+  .user-color-5 { color: #1abc9c; }
+  .user-color-6 { color: #d35400; }
+  .user-color-7 { color: #34495e; }
+</style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">
+        ConectaEG: Noticias
+      </div>
+      <div class="nav-links">
+        <a href="#" title="Búsqueda"><i class="fas fa-search"></i></a>
+        <a href="https://websim.io/app-social-blog/noticias/configuracion" title="Ajustes"><i class="fas fa-cog"></i></a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <main class="main-content">
+      <div class="news-blocks">
+        <div class="news-block" id="official-news-block">
+          <h2>Oficiales</h2>
+        </div>
+        <div class="news-block" id="user-news-block">
+          <h2>Usuarios</h2>
+        </div>
+      </div>
+      <div id="newsContainer"></div>
+    </main>
+  </div>
+
+  <button id="addNewsWithPhotoBtn" class="btn btn-success btn-lg rounded-circle add-news-btn" style="display: none;">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <nav class="bottom-nav">
+    <div class="container">
+      <ul class="nav justify-content-between">
+        <li class="nav-item">
+          <a class="nav-link" href="https://websim.io/app-social-blog/"><i class="fas fa-home"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="https://websim.io/app-social-blog/noticias"><i class="fas fa-newspaper"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://websim.io/app-social-blog/mensajes"><i class="fas fa-comment-dots"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://websim.io/app-social-blog/perfil"><i class="fas fa-user"></i></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Modal para mostrar la noticia completa -->
+  <div class="modal fade" id="newsModal" tabindex="-1" aria-labelledby="newsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newsModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="modalContent"></p>
+          <div id="commentSection" class="comment-section">
+            <!-- Comentarios se insertarán aquí dinámicamente -->
+          </div>
+          <form id="commentForm" class="mt-3">
+            <div class="mb-3">
+              <textarea class="form-control" id="commentText" rows="2" placeholder="Escribe un comentario..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Comentar</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <small id="modalMeta"></small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para añadir nueva noticia -->
+  <div class="modal fade" id="addNewsModal" tabindex="-1" aria-labelledby="addNewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addNewsModalLabel">Añadir Nueva Noticia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addNewsForm">
+            <div class="mb-3">
+              <label for="newsTitle" class="form-label">Título</label>
+              <input type="text" class="form-control" id="newsTitle" required>
+            </div>
+            <div class="mb-3">
+              <label for="newsExcerpt" class="form-label">Resumen</label>
+              <textarea class="form-control" id="newsExcerpt" rows="2" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="newsContent" class="form-label">Contenido</label>
+              <textarea class="form-control" id="newsContent" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="newsSection" class="form-label">Categoría</label>
+              <select class="form-select" id="newsSection" required>
+                <option value="malabosa">Malabosa/Congosa</option>
+                <option value="ventas">Ventas</option>
+                <option value="publicidad">Publicidad</option>
+                <option value="comunicado">Comunicado</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="newsPhoto" class="form-label">Foto (opcional)</label>
+              <input type="file" class="form-control" id="newsPhoto" accept="image/*">
+            </div>
+            <div id="newsPhotoPreview"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="submitNewsBtn">Publicar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    let officialNewsData = [];
+    let userNewsData = [];
+
+    // Función para crear una tarjeta de noticia
+    function createNewsCard(news, isUserNews = false) {
+      const newsCard = document.createElement('div');
+      newsCard.classList.add('news-card');
+      newsCard.dataset.newsId = news.id;
+      
+      const iconMap = {
+        malabosa: 'fa-comments',
+        ventas: 'fa-shopping-cart',
+        publicidad: 'fa-ad',
+        comunicado: 'fa-bullhorn',
+        politica: 'fa-landmark',
+        economia: 'fa-chart-line',
+        sociedad: 'fa-users',
+        deportes: 'fa-futbol',
+        cultura: 'fa-palette'
+      };
+      
+      let cardContent = `
+        <div class="news-content">
+          <div class="news-header">
+            <i class="fas ${iconMap[news.section] || 'fa-newspaper'} news-icon"></i>
+            <h2 class="news-title">${news.title}</h2>
+            <span class="news-category">${news.section}</span>
+          </div>
+          ${news.image ? `<img src="${news.image}" alt="${news.title}" class="img-fluid mb-3">` : ''}
+          <p class="news-excerpt">${news.excerpt}</p>
+          <div class="news-meta">
+            <span class="news-source">${news.source}</span>
+            <span class="news-date">${news.date}</span>
+          </div>
+      `;
+      
+      if (isUserNews) {
+        cardContent += `
+          <div class="user-info">
+            <img src="https://via.placeholder.com/40" alt="Avatar de ${news.source}" class="user-avatar">
+            <span class="user-name">${news.source}</span>
+          </div>
+        `;
+      }
+      
+      cardContent += `</div>`;
+      newsCard.innerHTML = cardContent;
+
+      newsCard.addEventListener('click', () => showFullNews(news, isUserNews));
+      return newsCard;
+    }
+
+    // Función para mostrar la noticia completa en el modal
+    function showFullNews(news, isUserNews) {
+      const modal = new bootstrap.Modal(document.getElementById('newsModal'));
+      document.getElementById('newsModalLabel').textContent = news.title;
+      let content = news.image ? `<img src="${news.image}" alt="${news.title}" class="img-fluid mb-3">` : '';
+      content += `<p>${news.content}</p>`;
+      document.getElementById('modalContent').innerHTML = content;
+      document.getElementById('modalMeta').textContent = `${news.source} - ${news.date}`;
+
+      const commentSection = document.getElementById('commentSection');
+      commentSection.innerHTML = '';
+
+      if (isUserNews && news.comments) {
+        news.comments.forEach(comment => {
+          const commentElement = createCommentElement(comment);
+          commentSection.appendChild(commentElement);
+        });
+      }
+
+      const commentForm = document.getElementById('commentForm');
+      commentForm.style.display = isUserNews ? 'block' : 'none';
+      commentForm.onsubmit = (e) => {
+        e.preventDefault();
+        const commentText = document.getElementById('commentText').value;
+        if (commentText.trim()) {
+          const newComment = {
+            id: Date.now(),
+            user: "Usuario Actual",
+            content: commentText,
+            likes: 0,
+            replies: []
+          };
+          news.comments.push(newComment);
+          const commentElement = createCommentElement(newComment);
+          commentSection.appendChild(commentElement);
+          document.getElementById('commentText').value = '';
+        }
+      };
+
+      modal.show();
+    }
+
+    // Función para crear un elemento de comentario
+    function createCommentElement(comment) {
+      const commentElement = document.createElement('div');
+      commentElement.classList.add('comment');
+      const userColorClass = `user-color-${comment.user.length % 8}`;
+      commentElement.innerHTML = `
+        <div class="user-info">
+          <img src="https://via.placeholder.com/30" alt="Avatar de ${comment.user}" class="user-avatar" style="width: 30px; height: 30px;">
+          <span class="user-name ${userColorClass}">${comment.user}</span>
+        </div>
+        <p>${comment.content}</p>
+        <div class="comment-actions">
+          <span class="comment-like" data-likes="${comment.likes}">
+            <i class="far fa-heart"></i> <span class="like-count">${comment.likes}</span>
+          </span>
+          <span class="comment-reply">Responder</span>
+        </div>
+        <div class="reply-form" style="display: none;">
+          <textarea class="form-control" rows="2" placeholder="Escribe una respuesta..."></textarea>
+          <button class="btn btn-sm btn-primary mt-2">Enviar respuesta</button>
+        </div>
+        <div class="replies">
+          ${comment.replies.map(reply => `
+            <div class="reply">
+              <div class="user-info">
+                <img src="https://via.placeholder.com/20" alt="Avatar de ${reply.user}" class="user-avatar" style="width: 20px; height: 20px;">
+                <span class="user-name ${`user-color-${reply.user.length % 8}`}">${reply.user}</span>
+              </div>
+              <p>${reply.content}</p>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      const likeButton = commentElement.querySelector('.comment-like');
+      likeButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const likesCount = likeButton.querySelector('.like-count');
+        let likes = parseInt(likeButton.dataset.likes);
+        likes++;
+        likeButton.dataset.likes = likes;
+        likesCount.textContent = likes;
+        likeButton.classList.add('active');
+      });
+
+      const replyButton = commentElement.querySelector('.comment-reply');
+      const replyForm = commentElement.querySelector('.reply-form');
+      replyButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+      });
+
+      const sendReplyButton = replyForm.querySelector('button');
+      sendReplyButton.addEventListener('click', () => {
+        const replyText = replyForm.querySelector('textarea').value;
+        if (replyText.trim()) {
+          const newReply = {
+            id: Date.now(),
+            user: "Usuario Actual",
+            content: replyText
+          };
+          comment.replies.push(newReply);
+          const replyElement = document.createElement('div');
+          replyElement.classList.add('reply');
+          const replyUserColorClass = `user-color-${newReply.user.length % 8}`;
+          replyElement.innerHTML = `
+            <div class="user-info">
+              <img src="https://via.placeholder.com/20" alt="Avatar de ${newReply.user}" class="user-avatar" style="width: 20px; height: 20px;">
+              <span class="user-name ${replyUserColorClass}">${newReply.user}</span>
+            </div>
+            <p>${newReply.content}</p>
+          `;
+          commentElement.querySelector('.replies').appendChild(replyElement);
+          replyForm.querySelector('textarea').value = '';
+          replyForm.style.display = 'none';
+        }
+      });
+
+      return commentElement;
+    }
+
+    // Función para cargar las noticias
+    function loadNews(newsData, isUserNews = false) {
+      const newsContainer = document.getElementById('newsContainer');
+      newsContainer.innerHTML = '';
+      newsData.forEach(news => {
+        newsContainer.appendChild(createNewsCard(news, isUserNews));
+      });
+    }
+
+    // Funcionalidad para cambiar entre noticias oficiales y de usuarios
+    const officialNewsBlock = document.getElementById('official-news-block');
+    const userNewsBlock = document.getElementById('user-news-block');
+    const addNewsWithPhotoBtn = document.getElementById('addNewsWithPhotoBtn');
+
+    officialNewsBlock.addEventListener('click', () => {
+      officialNewsBlock.classList.add('active');
+      userNewsBlock.classList.remove('active');
+      loadNews(officialNewsData);
+      addNewsWithPhotoBtn.style.display = 'none';
+    });
+
+    userNewsBlock.addEventListener('click', () => {
+      userNewsBlock.classList.add('active');
+      officialNewsBlock.classList.remove('active');
+      loadNews(userNewsData, true);
+      addNewsWithPhotoBtn.style.display = 'block';
+    });
+
+    // Cargar noticias oficiales por defecto
+    officialNewsBlock.click();
+
+    // Manejar la navegación del menú inferior
+    document.querySelectorAll('.bottom-nav .nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const route = e.currentTarget.getAttribute('href');
+        navigateTo(route);
+      });
+    });
+
+    function navigateTo(route) {
+      console.log(`Navegando a: ${route}`);
+      // Implementar lógica de navegación
+    }
+
+    // Funcionalidad para añadir nuevas noticias
+    const addNewsModal = new bootstrap.Modal(document.getElementById('addNewsModal'));
+    const submitNewsBtn = document.getElementById('submitNewsBtn');
+    const addNewsForm = document.getElementById('addNewsForm');
+    const newsPhotoInput = document.getElementById('newsPhoto');
+    const newsPhotoPreview = document.getElementById('newsPhotoPreview');
+
+    addNewsWithPhotoBtn.addEventListener('click', () => {
+      addNewsModal.show();
+    });
+
+    newsPhotoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          newsPhotoPreview.innerHTML = `<img src="${e.target.result}" alt="Vista previa" class="img-fluid">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    submitNewsBtn.addEventListener('click', () => {
+      if (addNewsForm.checkValidity()) {
+        const newNews = {
+          id: Date.now(),
+          title: document.getElementById('newsTitle').value,
+          excerpt: document.getElementById('newsExcerpt').value,
+          content: document.getElementById('newsContent').value,
+          section: document.getElementById('newsSection').value,
+          source: "Usuario Actual",
+          date: new Date().toLocaleDateString(),
+          image: newsPhotoPreview.querySelector('img') ? newsPhotoPreview.querySelector('img').src : null,
+          comments: []
+        };
+
+        userNewsData.unshift(newNews);
+        if (userNewsBlock.classList.contains('active')) {
+          loadNews(userNewsData, true);
+        }
+
+        addNewsModal.hide();
+        addNewsForm.reset();
+        newsPhotoPreview.innerHTML = '';
+      } else {
+        addNewsForm.reportValidity();
+      }
+    });
+
+    // Función para obtener noticias oficiales de realequatorialguinea.com
+    async function fetchOfficialNews() {
+      try {
+        const response = await axios.get('https://realequatorialguinea.com/wp-json/wp/v2/posts?_embed&per_page=20');
+        const newsData = response.data;
+
+        const newOfficialNews = newsData.map(post => ({
+          id: post.id,
+          title: post.title.rendered,
+          excerpt: post.excerpt.rendered.replace(/<[^>]*>/g, '').trim(),
+          content: post.content.rendered,
+          source: "Real Equatorial Guinea",
+          date: new Date(post.date).toLocaleDateString(),
+          section: post.categories.length > 0 ? getCategoryName(post.categories[0]) : "comunicado",
+          image: post._embedded['wp:featuredmedia'] ? post._embedded['wp:featuredmedia'][0].source_url : null
+        }));
+
+        // Combinar las nuevas noticias con las existentes, evitando duplicados
+        officialNewsData = [...newOfficialNews, ...officialNewsData.filter(news => 
+          !newOfficialNews.some(newNews => newNews.id === news.id)
+        )];
+
+        if (officialNewsBlock.classList.contains('active')) {
+          loadNews(officialNewsData);
+        }
+      } catch (error) {
+        console.error('Error al obtener noticias oficiales:', error);
+      }
+    }
+
+    function getCategoryName(categoryId) {
+      const categories = {
+        1: "comunicado",
+        2: "politica",
+        3: "economia",
+        4: "sociedad",
+        5: "deportes",
+        6: "cultura"
+      };
+      return categories[categoryId] || "comunicado";
+    }
+
+    // Función para actualizar noticias periódicamente
+    function startNewsUpdateInterval() {
+      setInterval(fetchOfficialNews, 60 * 1000); // Actualizar cada minuto
+    }
+
+    // Iniciar la actualización periódica de noticias
+    startNewsUpdateInterval();
+
+    // Llamar a fetchOfficialNews inmediatamente para cargar noticias al inicio
+    fetchOfficialNews();
+  </script>
+</body>
+</html>
