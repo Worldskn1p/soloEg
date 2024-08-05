@@ -15,245 +15,229 @@
   
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
     background-color: var(--background-color);
     color: var(--text-color);
-    min-height: 100vh;
     display: flex;
-    flex-direction: column;
-  }
-  
-  .container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
   }
   
-  header {
-    background-color: #000000;
-    color: white;
-    padding: 10px 0;
+  .auth-container {
+    background-color: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .auth-header {
     text-align: center;
+    margin-bottom: 30px;
   }
   
-  .logo {
+  .auth-header h1 {
     font-size: 24px;
-    font-weight: bold;
+    color: var(--primary-color);
   }
   
   .auth-form {
-    background-color: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
   }
   
-  .form-group {
+  .auth-form input {
     margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
   }
   
-  .form-control {
-    border-radius: 20px;
-    padding: 10px 15px;
-  }
-  
-  .btn-primary {
+  .auth-form button {
     background-color: var(--primary-color);
+    color: white;
     border: none;
-    border-radius: 20px;
-    padding: 10px 20px;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 16px;
     font-weight: bold;
-    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
   
-  .btn-primary:hover {
+  .auth-form button:hover {
     background-color: #1991DA;
   }
   
-  .toggle-form {
+  .auth-toggle {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--secondary-text-color);
   }
   
-  .toggle-form a {
+  .auth-toggle a {
     color: var(--primary-color);
     text-decoration: none;
+    font-weight: bold;
   }
   
-  .social-login {
-    margin-top: 20px;
+  .auth-toggle a:hover {
+    text-decoration: underline;
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 10px;
     text-align: center;
   }
-  
-  .social-btn {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #fff;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    font-size: 20px;
-    line-height: 40px;
+
+  .success-message {
+    color: #28a745;
+    font-size: 14px;
+    margin-top: 10px;
     text-align: center;
-    margin: 0 5px;
-    transition: all 0.3s ease;
-  }
-  
-  .social-btn:hover {
-    background-color: var(--primary-color);
-    color: #fff;
   }
 </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      ConectaEG
+  <div class="auth-container">
+    <div class="auth-header">
+      <h1>Bienvenido a ConectaEG</h1>
     </div>
-  </header>
-
-  <div class="container">
-    <div class="auth-form" id="auth-form-container">
+    <div id="auth-form-container">
       <!-- El contenido del formulario se cargará dinámicamente aquí -->
+    </div>
+    <div class="auth-toggle">
+      <span id="toggle-text"></span> <a href="#" id="toggle-link"></a>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    let isLoginForm = true;
+    let isLoginMode = true;
 
-    function renderForm() {
+    function renderAuthForm() {
       const formContainer = document.getElementById('auth-form-container');
-      formContainer.innerHTML = `
-        <h2 class="text-center mb-4">${isLoginForm ? 'Iniciar sesión' : 'Registrarse'}</h2>
-        <form id="auth-form">
-          ${!isLoginForm ? `
-            <div class="form-group">
-              <input type="text" class="form-control" id="name" placeholder="Nombre completo" required>
-            </div>
-          ` : ''}
-          <div class="form-group">
-            <input type="email" class="form-control" id="email" placeholder="Correo electrónico" required>
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
-          </div>
-          ${!isLoginForm ? `
-            <div class="form-group">
-              <input type="password" class="form-control" id="confirm-password" placeholder="Confirmar contraseña" required>
-            </div>
-          ` : ''}
-          <button type="submit" class="btn btn-primary">${isLoginForm ? 'Iniciar sesión' : 'Registrarse'}</button>
-        </form>
-        <div class="toggle-form mt-3">
-          <a href="#" id="toggle-form-link">${isLoginForm ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}</a>
-        </div>
-        <div class="social-login">
-          <p>O inicia sesión con:</p>
-          <a href="#" class="social-btn" title="Iniciar sesión con Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-btn" title="Iniciar sesión con Google"><i class="fab fa-google"></i></a>
-          <a href="#" class="social-btn" title="Iniciar sesión con Twitter"><i class="fab fa-twitter"></i></a>
-        </div>
-      `;
+      const toggleText = document.getElementById('toggle-text');
+      const toggleLink = document.getElementById('toggle-link');
 
-      document.getElementById('toggle-form-link').addEventListener('click', (e) => {
-        e.preventDefault();
-        isLoginForm = !isLoginForm;
-        renderForm();
-      });
+      if (isLoginMode) {
+        formContainer.innerHTML = `
+          <form class="auth-form" id="login-form">
+            <input type="text" id="login-username" placeholder="Usuario" required>
+            <input type="password" id="login-password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar sesión</button>
+          </form>
+          <div id="error-message" class="error-message"></div>
+        `;
+        toggleText.textContent = "¿No tienes una cuenta?";
+        toggleLink.textContent = "Regístrate";
+      } else {
+        formContainer.innerHTML = `
+          <form class="auth-form" id="register-form">
+            <input type="text" id="register-username" placeholder="Usuario" required>
+            <input type="email" id="register-email" placeholder="Correo electrónico" required>
+            <input type="password" id="register-password" placeholder="Contraseña" required>
+            <input type="password" id="register-confirm-password" placeholder="Confirmar contraseña" required>
+            <button type="submit">Registrarse</button>
+          </form>
+          <div id="error-message" class="error-message"></div>
+        `;
+        toggleText.textContent = "¿Ya tienes una cuenta?";
+        toggleLink.textContent = "Inicia sesión";
+      }
 
-      document.getElementById('auth-form').addEventListener('submit', handleSubmit);
+      document.getElementById(isLoginMode ? 'login-form' : 'register-form').addEventListener('submit', handleSubmit);
     }
 
-    function handleSubmit(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    function handleSubmit(event) {
+      event.preventDefault();
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.textContent = '';
 
-      if (isLoginForm) {
-        // Lógica de inicio de sesión
-        login(email, password);
+      if (isLoginMode) {
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+        
+        // Simular una llamada a la API para iniciar sesión
+        simulateLogin(username, password);
       } else {
-        const name = document.getElementById('name').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirm-password').value;
+
         if (password !== confirmPassword) {
-          showAlert('Las contraseñas no coinciden');
+          errorMessage.textContent = 'Las contraseñas no coinciden';
           return;
         }
-        // Lógica de registro
-        register(name, email, password);
+
+        // Simular una llamada a la API para registrar al usuario
+        simulateRegister(username, email, password);
       }
     }
 
-    function login(email, password) {
-      // Simular una solicitud de inicio de sesión
-      axios.post('https://websim.io/app-social-blog/api/login', { email, password })
-        .then(response => {
-          console.log('Inicio de sesión exitoso:', response.data);
-          // Aquí puedes manejar la respuesta del servidor, por ejemplo, guardar el token de autenticación
-          showAlert('Inicio de sesión exitoso');
-          // Redirigir al usuario a la página principal después de un inicio de sesión exitoso
+    function simulateLogin(username, password) {
+      // Simular una demora en la respuesta de la API
+      setTimeout(() => {
+        // En una aplicación real, aquí se haría una llamada a la API para autenticar al usuario
+        if (username === 'usuario_ejemplo' && password === 'contraseña123') {
+          // Simulamos un inicio de sesión exitoso
+          const userData = { name: 'Usuario Ejemplo', username: 'usuario_ejemplo' };
+          localStorage.setItem('currentUser', JSON.stringify(userData));
+          showSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
           setTimeout(() => {
             window.location.href = 'https://websim.io/app-social-blog/';
-          }, 1500);
-        })
-        .catch(error => {
-          console.error('Error en el inicio de sesión:', error);
-          showAlert('Error en el inicio de sesión. Por favor, verifica tus credenciales.');
-        });
+          }, 2000);
+        } else {
+          showErrorMessage('Usuario o contraseña incorrectos');
+        }
+      }, 1000);
     }
 
-    function register(name, email, password) {
-      // Simular una solicitud de registro
-      axios.post('https://websim.io/app-social-blog/api/register', { name, email, password })
-        .then(response => {
-          console.log('Registro exitoso:', response.data);
-          showAlert('Registro exitoso. Por favor, inicia sesión.');
-          isLoginForm = true;
-          renderForm();
-        })
-        .catch(error => {
-          console.error('Error en el registro:', error);
-          showAlert('Error en el registro. Por favor, intenta nuevamente.');
-        });
+    function simulateRegister(username, email, password) {
+      // Simular una demora en la respuesta de la API
+      setTimeout(() => {
+        // En una aplicación real, aquí se haría una llamada a la API para registrar al usuario
+        if (username && email && password) {
+          // Simulamos un registro exitoso
+          const userData = { name: username, username: username.toLowerCase().replace(' ', '_'), email: email };
+          localStorage.setItem('currentUser', JSON.stringify(userData));
+          showSuccessMessage('Registro exitoso. Redirigiendo...');
+          setTimeout(() => {
+            window.location.href = 'https://websim.io/app-social-blog/';
+          }, 2000);
+        } else {
+          showErrorMessage('Por favor, complete todos los campos');
+        }
+      }, 1000);
     }
 
-    function showAlert(message) {
-      const alertElement = document.createElement('div');
-      alertElement.className = 'alert alert-info alert-dismissible fade show mt-3';
-      alertElement.role = 'alert';
-      alertElement.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      `;
-      document.querySelector('.container').insertBefore(alertElement, document.querySelector('.auth-form'));
+    function showErrorMessage(message) {
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
     }
 
-    // Inicializar el formulario
-    renderForm();
+    function showSuccessMessage(message) {
+      const formContainer = document.getElementById('auth-form-container');
+      formContainer.innerHTML = `<div class="success-message">${message}</div>`;
+    }
 
-    // Manejar el inicio de sesión con redes sociales
-    document.querySelectorAll('.social-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const platform = e.currentTarget.title.split(' ').pop();
-        socialLogin(platform);
-      });
+    document.getElementById('toggle-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      isLoginMode = !isLoginMode;
+      renderAuthForm();
     });
 
-    function socialLogin(platform) {
-      // Simular el inicio de sesión con redes sociales
-      console.log(`Iniciando sesión con ${platform}`);
-      showAlert(`Inicio de sesión con ${platform} en proceso...`);
-      // Aquí puedes implementar la lógica real para el inicio de sesión con redes sociales
-    }
+    // Renderizar el formulario inicial
+    renderAuthForm();
   </script>
 </body>
 </html>
